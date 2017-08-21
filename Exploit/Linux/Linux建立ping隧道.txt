@@ -1,0 +1,32 @@
+本人小菜一个，由于工作关系，只熟悉linux，win不熟悉~~ ，以下测试在linux环境中完成。分享下~~~
+
+软件名称：ptunnel
+主页：http://www.cs.uit.no/~daniels/PingTunnel/#download,该软件有rpm，安装十分方便。
+
+测试环境：A-------->【防火墙】------->B------->C
+说明：A机器想要远程控制C机器，但是，B和C都在防火墙后面，防火墙只开放了ping端口，没有开放ssh的22端口；
+测试目的：A和B机器运行 ptunnel，两者之间建立隧道，在隧道里面建立ssh，并且连接到C服务器；
+1）B机器，安装ptunnel：
+rpm -ivh ptunnel-0.61-1.2.el5.rf.x86_64.rpm
+2）运行软件：90sec-国内后起的信息安全论坛之一,专注web安全,软件安全,无线安全等领域技术交流与讨论。我们以最大的努力为网络撑起一片蔚蓝的天空，同时也希望更多的技术爱好者加入我们。
+[root@VM-46FB07DB test]# ptunnel 
+[inf]: Starting ptunnel v 0.60.
+[inf]: (c) 2004-2005 Daniel Stoedle, daniels@cs.uit.no
+[inf]: Forwarding incoming ping packets over TCP. 
+[inf]: Ping proxy is listening in privileged mode.
+[inf]: Incoming tunnel request from 59.172.172.xxx.
+[inf]: Starting new session to 59.175.23x.xxx:22 with ID 63438 
+[inf]: Dropping tunnel to 59.175.23x.xxx:22 due to inactivity.
+3）在A机（bt5）上运行如下命令：
+cd /pentest/backdoors/ptunnel/
+
+./ptunnel -p 112.125.5x.xx -lp 2222 -da 59.175.23x.xxx -dp 22
+说明：
+服务器与A机(112.125.57.xx)建立tunnel,监听本地2222端口，当本地连接2222端口时，B机连接c机（59.175.238.xxx）的22
+好端口；
+
+4）ssh c服务器：
+ssh -p 2222 root@127.0.0.1 
+
+PS：
+如果连接异常，要删除这个文件/root/.ssh/known_hosts
